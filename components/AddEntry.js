@@ -4,6 +4,8 @@ import {getMetricMetaInfo, timeToString} from "../utils/helpers";
 import Sliders from './Sliders';
 import Steppers from './Steppers'
 import DateHeader from "./DateHeader";
+import {Ionicons} from '@expo/vector-icons';
+import TextButton from "./TextButton";
 
 function SubmitBtn({onPress}) {
     return(
@@ -63,8 +65,24 @@ class AddEntry extends Component {
         }))
     }
 
+    reset = () => {
+        const ket = timeToString();
+    }
+
     render() {
         const metainfo = getMetricMetaInfo();
+        if (this.props.alreadyLogged){
+            return (
+                <View>
+                    <Ionicons
+                        name='ios-happy'
+                        size={100}
+                        />
+                        <Text>You already logged information for today.</Text>
+                    <TextButton onPress={this.reset}>Reset</TextButton>
+                </View>
+            )
+        }
         return(
             <View>
                 <DateHeader date={(new Date()).toLocaleDateString()}/>
