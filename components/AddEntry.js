@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {getMetricMetaInfo, timeToString} from "../utils/helpers";
+import {getDailyReminderValue, getMetricMetaInfo, timeToString} from "../utils/helpers";
 import Sliders from './Sliders';
 import Steppers from './Steppers'
 import DateHeader from "./DateHeader";
 import {Ionicons} from '@expo/vector-icons';
 import TextButton from "./TextButton";
 import {submitEntry, removeEntry} from "../utils/api";
+import {addEntry} from "../actions";
+import {connect} from 'react-redux';
 
 function SubmitBtn({onPress}) {
     return(
@@ -65,11 +67,18 @@ class AddEntry extends Component {
             eat: 0,
         }))
 
+        this.props.dispatch(addEntry({
+            [key]: entry
+        }))
+
         submitEntry({key, entry});
     }
 
     reset = () => {
         const key = timeToString();
+        this.props.dispatch(addEntry({
+            [key]: getDailyReminderValue(),
+        }))
         removeEntry(key);
     }
 
@@ -124,4 +133,11 @@ class AddEntry extends Component {
     }
 }
 
-export default AddEntry;
+function mapStateToProps(state){
+    const key = timeToString();
+    return{
+        alreadyLogged: state[key] && typeof state[key].today==='undefined'
+    }
+}
+
+export default connect(mapStateToProps)(AddEntry);
