@@ -7,9 +7,9 @@ import {gray} from "../utils/colors";
 export default function MetricCard({date, metrics}) {
     return (
         <View>
-            (date && <DateHeader date={date}/>)
+            {date && <DateHeader date={date}/>}
             {Object.keys(metrics).map((metric)=>{
-                const {getIcon, displayName, unit, backGorundColor} = getMetricMetaInfo(metric);
+                const {getIcon, displayName, unit, backgroundColor} = getMetricMetaInfo(metric);
                 return(
                     <View style={styles.metric}>
                         {getIcon()}
