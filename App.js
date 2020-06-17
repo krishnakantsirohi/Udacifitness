@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {View, Platform, StatusBar} from 'react-native';
 import AddEntry from "./components/AddEntry";
 import {createStore} from "redux";
 import {Provider} from 'react-redux';
@@ -10,8 +10,15 @@ import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs
 import {NavigationContainer} from "@react-navigation/native";
 import {purple, white} from "./utils/colors";
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
+import Constants from 'expo-constants'
 
-
+export function statusBar({backgroundColor, ...props}) {
+    return(
+        <View style={{backgroundColor, height: Constants.statusBarHeight}}>
+            <StatusBar translucent backgroundColor={backgroundColor} {...props}/>
+        </View>
+    )
+}
 
 export default class App extends React.Component{
 
@@ -19,6 +26,9 @@ export default class App extends React.Component{
         const Tab = Platform.OS==='ios'?createBottomTabNavigator():createMaterialTopTabNavigator();
         return (
             <Provider store={createStore(reducer)}>
+                <View style={{purple, height:Constants.statusBarHeight}}>
+                    <StatusBar translucent backgroundColor={purple} barStyle='light-content' />
+                </View>
                     <NavigationContainer>
                         <Tab.Navigator
                             screenOptions={({ route }) => ({
