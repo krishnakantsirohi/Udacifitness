@@ -13,6 +13,7 @@ import {Ionicons, FontAwesome} from '@expo/vector-icons';
 import Constants from 'expo-constants'
 import { createStackNavigator } from '@react-navigation/stack';
 import EntryDetail from "./components/EntryDetail";
+import Live from "./components/Live";
 
 export function statusBar({backgroundColor, ...props}) {
     return(
@@ -34,6 +35,8 @@ export default class App extends React.Component{
                             return <Ionicons name='ios-bookmarks' size={38} color={color}/>
                         } else if (route.name === 'Add Entry') {
                             return <FontAwesome name='plus-square' size={38} color={color}/>
+                        } else if (route.name==='Live'){
+                            return <Ionicons name='ios-speedometer' size={38} color={color}/>
                         }
                     },
                 })}
@@ -56,6 +59,7 @@ export default class App extends React.Component{
                 }}>
                 <Tab.Screen name="History" component={History} />
                 <Tab.Screen name="Add Entry" component={AddEntry} />
+                <Tab.Screen name='Live' component={Live}/>
             </Tab.Navigator>
         );
         const Stack = createStackNavigator();
@@ -63,6 +67,7 @@ export default class App extends React.Component{
             <Stack.Navigator headerMode='screen'>
                 <Stack.Screen name='Home' component={Tabs} options={{headerShown:false}}/>
                 <Stack.Screen name='EntryDetail' component={EntryDetail} options={{headerTintColor:white, headerStyle:{backgroundColor:purple,}}}/>
+                <Stack.Screen name='Live' component={Live}/>
             </Stack.Navigator>
         );
 
