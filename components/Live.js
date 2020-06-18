@@ -9,30 +9,23 @@ import {calculateDirection} from "../utils/helpers";
 class Live extends Component {
     state = {
         coords: null,
-        status: '',
+        status: null,
         direction: '',
     }
 
     componentDidMount() {
-        Permission.getAsync(Permission.LOCATION)
-            .then(({status})=>{
-                if (status==='granted'){
-                    return this.setLocation()
-                }
-                this.setState(()=>({
-                    status
-                }))
-            })
-            .catch((error)=>{
-                console.warn('Error getting location permission', error)
-                this.setState(()=>({
-                    status: 'undetermined'
-                }))
-            })
+        this.askPermission()
     }
 
     askPermission = () => {
-
+        Permission.askAsync(Permission.LOCATION)
+            .then(({status})=>{
+                if (status==='granted') {
+                    return this.setLocation()
+                }
+                this.setState(()=>({status}))
+            })
+            .catch((error)=>console.warn('error asking location permission', error))
     }
 
     setLocation = () => {
@@ -42,7 +35,6 @@ class Live extends Component {
             distanceInterval: 1,
         }, ({coords})=> {
             const newDirection = calculateDirection(coords.heading);
-            const { direction} = this.state;
             this.setState(()=>({
                 coords,
                 status:'granted',
@@ -52,7 +44,8 @@ class Live extends Component {
     }
 
     render() {
-        const {status, coord, direction} = this.state;
+        const {status, coords, direction} = this.state;
+        console.log(this.state)
         if (status===null){
             return <ActivityIndicator style={{marginTop:30}}/>
         }
@@ -88,7 +81,9 @@ class Live extends Component {
                     <Text style={styles.header}>
                         You're heading
                     </Text>
-                    <Text style={styles.direction}>North</Text>
+                    <Text style={styles.direction}>
+                        {direction}
+                    </Text>
                 </View>
                 <View style={styles.metricContainer}>
                     <View style={styles.metric}>
@@ -96,7 +91,7 @@ class Live extends Component {
                             Altitude
                         </Text>
                         <Text style={[styles.subHeader, {color: white}]}>
-                            {200} feet
+                            {Math.round(coords.altitude * 3.2808)} feet
                         </Text>
                     </View>
                     <View style={styles.metric}>
@@ -104,11 +99,10 @@ class Live extends Component {
                             Speed
                         </Text>
                         <Text style={[styles.subHeader, {color: white}]}>
-                            {300} mph
+                            {(coords.speed * 2.2369).toFixed(1)} MPH
                         </Text>
                     </View>
                 </View>
-                <Text>{JSON.stringify(this.state)}</Text>
             </View>
         )
     }
